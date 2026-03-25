@@ -23,6 +23,7 @@ const generateOtp = async (req, res) => {
 
     return res.status(200).json({ message: "OTP sent successfully" });
   } catch (err) {
+    console.error("OTP mail error:", err);
     return res.status(500).json({ message: "Error in sending OTP" });
   }
 };
