@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(#000033 0%, rgba(18, 139, 251, 0.1) 15%, rgba(0, 140, 115, 0) 30%);
+  background-color: rgba(21,21,21);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+.shape {
+  aspect-ratio: 0.993;
+  clip-path: shape(
+    from 100% 50%,
+    curve to 50% 0% with 72.39% 50%/50% 27.61%,
+    curve by -50% 50% with 0% 27.61%/-22.39% 50%,
+    curve by 50% 50% with 27.61% 0%/50% 22.39%,
+    curve by 50% -50% with 0% -27.61%/22.39% -50%
+  );
+}
+
