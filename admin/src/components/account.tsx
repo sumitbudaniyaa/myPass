@@ -1,33 +1,38 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import api from "@/utils/api";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { User, Mail, Phone, Pencil, Check, X } from "lucide-react";
 
 type OutletContextType = {
   admin: any;
 };
 
+const inputClass =
+  "w-full bg-white/[0.06] border border-white/10 rounded-xl px-3 py-2.5 text-white/80 text-sm outline-none placeholder:text-white/25 focus:border-white/20 transition-colors";
+
 const Account = () => {
   const { admin } = useOutletContext<OutletContextType>();
   const navigate = useNavigate();
   const [isedit, setisedit] = useState<boolean>(false);
-
   const [name, setname] = useState<string>(admin?.name);
   const [email, setemail] = useState<string>(admin?.email);
   const [phone, setphone] = useState<string>(admin?.phone);
   const [saving, setsaving] = useState<boolean>(false);
   const [confirmdelete, setconfirmdelete] = useState<boolean>(false);
 
+  const cancelEdit = () => {
+    setname(admin?.name);
+    setemail(admin?.email);
+    setphone(admin?.phone);
+    setisedit(false);
+  };
+
   const deleteAdmin = async () => {
     try {
-      const res = await api.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/eventRoute/deleteAdmin`,
-        {
-          adminid: admin?._id,
-        }
-      );
-
+      const res = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/eventRoute/deleteAdmin`, {
+        adminid: admin?._id,
+      });
       toast.success(res.data.message);
       localStorage.removeItem("token");
       navigate("/");
@@ -40,17 +45,12 @@ const Account = () => {
     try {
       e.preventDefault();
       setsaving(true);
-
-      const res = await api.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/eventRoute/updateAdmin`,
-        {
-          adminid: admin?._id,
-          name,
-          email,
-          phone,
-        }
-      );
-
+      const res = await api.post(`${import.meta.env.VITE_BACKEND_URL}/api/eventRoute/updateAdmin`, {
+        adminid: admin?._id,
+        name,
+        email,
+        phone,
+      });
       toast.success(res.data.message);
       setisedit(false);
     } catch (err: any) {
@@ -61,120 +61,154 @@ const Account = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col p-3">
-      <form className="w-full flex flex-col">
-        <div className="mt-5 self-end">
-          {isedit ? (
+    <div className="w-full min-h-screen p-4 lg:p-5">
+      {/* Profile Info Card */}
+      <div className="bg-white/[0.04] border border-white/[0.07] rounded-2xl overflow-hidden">
+        <div className="flex justify-between items-center px-4 py-3 border-b border-white/[0.07]">
+          <p className="text-white/40 text-xs font-medium uppercase tracking-wider">Profile</p>
+          {!isedit ? (
             <button
-              onClick={(e) => updateAdmin(e)}
-              className={`bg-green-900/30 text-green-500 ${
-                saving
-                  ? "opacity-50 pointer-events-none cursor-not-allowed"
-                  : ""
-              } rounded-md p-1 pl-2 text-sm pr-2`}
+              onClick={() => setisedit(true)}
+              className="flex items-center gap-1.5 text-white/45 hover:text-white/70 text-xs transition-colors cursor-pointer"
             >
-              {saving ? "saving..." : "Save"}
+              <Pencil size="0.75rem" /> Edit
             </button>
           ) : (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                setisedit(true);
-              }}
-              className="bg-white/10 text-[rgba(255,255,255,0.8)] text-sm rounded-md p-1 pl-2 pr-2"
-            >
-              Edit
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={cancelEdit}
+                className="flex items-center gap-1 text-white/35 hover:text-white/60 text-xs transition-colors cursor-pointer"
+              >
+                <X size="0.75rem" /> Cancel
+              </button>
+            </div>
           )}
         </div>
 
-        <p className="text-[rgba(255,255,255,0.5)] text-sm mt-3">Name</p>
-        <p className="text-[rgba(255,255,255,0.8)] text-lg">
-          {isedit ? (
-            <input
-              required
-              type="text"
-              value={name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setname(e.target.value);
-              }}
-              className="outline-none p-1 w-full rounded-md border border-[rgba(255,255,255,0.2)]"
-            />
-          ) : (
-            name
-          )}
-        </p>
-        <p className="text-[rgba(255,255,255,0.5)] text-sm mt-3">Email</p>
-        <p className="text-[rgba(255,255,255,0.8)] text-lg">
-          {isedit ? (
-            <input
-              required
-              type="email"
-              value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setemail(e.target.value);
-              }}
-              className="outline-none p-1 w-full rounded-md border border-[rgba(255,255,255,0.2)]"
-            />
-          ) : (
-            email
-          )}
-        </p>
-        <p className="text-[rgba(255,255,255,0.5)] text-sm mt-3">Phone</p>
-        <p className="text-[rgba(255,255,255,0.8)] text-lg">
-          {isedit ? (
-            <input
-              type="tel"
-              required
-              value={phone}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setphone(e.target.value);
-              }}
-              className="outline-none p-1 w-full rounded-md border border-[rgba(255,255,255,0.2)]"
-            />
-          ) : (
-            phone
-          )}
-        </p>
-      </form>
+        <form onSubmit={updateAdmin} className="divide-y divide-white/[0.06]">
+          {/* Name */}
+          <div className="px-4 py-3">
+            <div className="flex items-center gap-3">
+              <User size="0.85rem" className="text-white/25 shrink-0" />
+              <div className="flex-1">
+                <p className="text-white/35 text-xs mb-1">Full name</p>
+                {isedit ? (
+                  <input
+                    required
+                    type="text"
+                    value={name}
+                    onChange={(e) => setname(e.target.value)}
+                    className={inputClass}
+                    autoFocus
+                  />
+                ) : (
+                  <p className="text-white/85 text-sm">{name}</p>
+                )}
+              </div>
+            </div>
+          </div>
 
-      <div className="flex justify-between bg-white/10 rounded-lg items-center mt-10 p-3">
-        <p className="text-[rgba(255,255,255,0.5)]">Delete Account</p>
+          {/* Email */}
+          <div className="px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Mail size="0.85rem" className="text-white/25 shrink-0" />
+              <div className="flex-1">
+                <p className="text-white/35 text-xs mb-1">Email address</p>
+                {isedit ? (
+                  <input
+                    required
+                    type="email"
+                    value={email}
+                    onChange={(e) => setemail(e.target.value)}
+                    className={inputClass}
+                  />
+                ) : (
+                  <p className="text-white/85 text-sm">{email}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Phone */}
+          <div className="px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Phone size="0.85rem" className="text-white/25 shrink-0" />
+              <div className="flex-1">
+                <p className="text-white/35 text-xs mb-1">Phone number</p>
+                {isedit ? (
+                  <input
+                    required
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setphone(e.target.value)}
+                    className={inputClass}
+                  />
+                ) : (
+                  <p className="text-white/85 text-sm">{phone}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Save button - only in edit mode */}
+          {isedit && (
+            <div className="px-4 py-3">
+              <button
+                type="submit"
+                disabled={saving}
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/10 hover:bg-white/15 border border-white/10 text-white/80 text-sm font-medium rounded-xl cursor-pointer transition-all disabled:opacity-50 disabled:pointer-events-none"
+              >
+                {saving ? (
+                  <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <Check size="0.85rem" /> Save changes
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </form>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="mt-5 bg-red-950/20 border border-red-700/20 rounded-2xl p-4 flex justify-between items-center">
+        <div>
+          <p className="text-white/60 text-sm font-medium">Delete Account</p>
+          <p className="text-white/30 text-xs mt-0.5">Removes all events, bookings, and data</p>
+        </div>
         <button
           onClick={() => setconfirmdelete(true)}
-          className="bg-red-900/30 text-red-500 p-1 pl-2 pr-2 rounded-sm"
+          className="bg-red-950/60 border border-red-700/30 text-red-400 text-sm px-4 py-1.5 rounded-full cursor-pointer hover:bg-red-950/80 transition-all"
         >
           Delete
         </button>
       </div>
 
-      {confirmdelete ? (
-        <>
-          <div className="inset-0 fixed bg-black/20 backdrop-blur-sm flex items-center justify-center z-40 ">
-            {" "}
-            <div className="p-5 rounded-md bg-[rgba(21,21,21)] w-[75%] lg:w-[25%]  border-1 border-[rgba(255,255,255,0.2)] z-40 flex flex-col text-[rgba(255,255,255,0.8)] gap-1">
-              <p>Are you sure you want to delete your account?</p>
-              <p className="text-sm text-[rgba(255,255,255,0.5)]">
-                Deleting account will delete all your data including events and
-                everything
+      {/* Confirm Delete Modal */}
+      {confirmdelete && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-[#111] border border-white/10 rounded-2xl p-6 w-[90%] max-w-sm flex flex-col gap-4 shadow-2xl">
+            <div>
+              <p className="text-white/85 font-semibold">Delete account?</p>
+              <p className="text-white/40 text-sm mt-1">
+                This will permanently delete your account, all events, bookings, and data. This cannot be undone.
               </p>
-              <button
-                onClick={() => deleteAdmin()}
-                className="text-red-500 bg-red-900/30 cursor-pointer p-1 rounded-sm mt-2"
-              >
-                Delete
-              </button>
-              <button
-                className="bg-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.7)] p-1 cursor-pointer rounded-sm mt-2"
-                onClick={() => setconfirmdelete(false)}
-              >
-                Cancel
-              </button>
-            </div>{" "}
-          </div>{" "}
-        </>
-      ) : (
-        ""
+            </div>
+            <button
+              onClick={deleteAdmin}
+              className="w-full bg-red-950/60 border border-red-700/30 text-red-400 py-2.5 rounded-xl text-sm font-medium cursor-pointer hover:bg-red-950/80 transition-all"
+            >
+              Delete my account
+            </button>
+            <button
+              onClick={() => setconfirmdelete(false)}
+              className="w-full bg-white/[0.06] border border-white/10 text-white/60 py-2.5 rounded-xl text-sm cursor-pointer hover:bg-white/10 transition-all"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

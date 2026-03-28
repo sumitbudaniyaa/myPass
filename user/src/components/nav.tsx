@@ -16,25 +16,18 @@ const Nav = ({
   navtab,
 }: NavProps) => {
   return (
-    <div
-      className={`w-full h-[7vh] sticky top-0 flex items-center backdrop-blur-lg justify-between pl-2 pr-2 lg:pl-4 lg:pr-4 z-50 transition-all duration-300 
-      `}
-    >
-      <div className="flex items-center gap-1">
-        <div className="shape bg-[rgba(255,255,255,0.5)] w-6"></div>
-        <p className="text-[rgba(255,255,255,0.5)]">myPass</p>
+    <div className="w-full h-[7vh] sticky top-0 flex items-center backdrop-blur-lg justify-between px-3 lg:px-5 z-50 border-b border-white/[0.06]">
+      <div className="flex items-center gap-1.5">
+        <img src="/mypasslogo.png" className="w-6 h-6 object-contain" alt="myPass" />
+        <p className="text-white/80 font-semibold text-sm tracking-wide">myPass</p>
       </div>
-      <div className="flex items-center gap-2.5 lg:gap-4">
-        <div className="w-40 lg:w-50 h-[100%] relative flex items-center">
-          <Search
-            size={"1rem"}
-            className="absolute right-1 text-[rgba(255,255,255,0.4)]"
-          />{" "}
+
+      <div className="flex items-center gap-3">
+        <div className="relative flex items-center">
+          <Search size={"0.85rem"} className="absolute right-2.5 text-white/30 pointer-events-none" />
           <input
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setsearchText(e.target.value);
-            }}
-            className="bg-[rgba(255,255,255,0.1)] p-1 font-light h-[100%] text-[rgba(255,255,255,0.8)] border-1 border-[rgba(255,255,255,0.2)] pl-2 text-base outline-none w-[100%] rounded-md"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setsearchText(e.target.value)}
+            className="bg-white/[0.07] h-8 w-36 lg:w-48 pl-3 pr-7 text-xs text-white/80 border border-white/10 rounded-full outline-none placeholder:text-white/30 focus:border-white/20 transition-colors"
             type="text"
             placeholder="Search event"
           />
@@ -43,14 +36,14 @@ const Nav = ({
         {isLoggedIn ? (
           <img
             src="/usericon.png"
-            className="w-8 cursor-pointer"
+            className="w-7 h-7 rounded-full cursor-pointer opacity-80 hover:opacity-100 transition-opacity"
             alt=""
             onClick={() => setnavtab(!navtab)}
           />
         ) : (
           <button
             onClick={() => setisLogInOpen(true)}
-            className="p-1.5 pl-2 pr-2 bg-[rgba(255,255,255,0.2)] text-[rgba(255,255,255,0.8)] text-sm rounded-md"
+            className="px-3 py-1.5 bg-white/10 hover:bg-white/15 border border-white/10 text-white/80 text-xs rounded-full transition-all duration-200"
           >
             Log In
           </button>

@@ -14,9 +14,7 @@ const EventSection = ({ selectedCategory, searchText }: EventSectionProp) => {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/fetchEvents`
-      );
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/fetchEvents`);
       return res?.data?.events;
     } catch (err: any) {
       toast.error(err.response?.data?.message);
@@ -34,36 +32,43 @@ const EventSection = ({ selectedCategory, searchText }: EventSectionProp) => {
   useEffect(() => {
     if (selectedCategory !== "all") {
       tempEvents = tempEvents?.filter(
-        (event: any) => (event?.category).toLowerCase() === selectedCategory
+        (event: any) => event?.category?.toLowerCase() === selectedCategory
       );
     }
-
     if (searchText.trim() !== "") {
       tempEvents = tempEvents?.filter((event: any) =>
-        (event?.name).toLowerCase().includes(searchText.toLowerCase())
+        event?.name?.toLowerCase().includes(searchText.toLowerCase())
       );
     }
-
     setfilteredEvents(tempEvents);
   }, [events, selectedCategory, searchText]);
 
   return (
-    <div className="pl-2 pr-2 flex flex-wrap w-[100%] lg:w-[70%] min-h-screen lg:self-center justify-center sm:justify-start gap-3 mt-5 ">
+    <div className="px-3 w-full lg:w-[70%] lg:self-center mt-5 pb-6">
       {isLoading ? (
-        <div className="flex flex-row gap-2">
-          <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce"></div>
-          <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce [animation-delay:-.3s]"></div>
-          <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce [animation-delay:-.5s]"></div>
+        <div className="flex justify-center mt-16">
+          <div className="flex gap-2">
+            <div className="w-2 h-2 rounded-full bg-white/20 animate-bounce" />
+            <div className="w-2 h-2 rounded-full bg-white/20 animate-bounce [animation-delay:-.3s]" />
+            <div className="w-2 h-2 rounded-full bg-white/20 animate-bounce [animation-delay:-.5s]" />
+          </div>
         </div>
-      ) : filteredEvents?.length !== 0 ? (
-        filteredEvents?.map((event: any, index: any) => (
-          <EventCard key={index} event={event} />
-        ))
+      ) : filteredEvents.length !== 0 ? (
+        <div className="flex flex-wrap gap-3 justify-start">
+          {filteredEvents.map((event: any, index: number) => (
+            <EventCard key={index} event={event} />
+          ))}
+        </div>
       ) : (
-        <div className="w-[100%] h-100 flex justify-center items-center p-5">
-          <h1 className="w-[100%] text-bold flex justify-center text-[rgba(255,255,255,0.4)] text-center">
-            Sorry, there are no events posted. Please come back later
-          </h1>
+        <div className="flex flex-col items-center justify-center mt-24 gap-3">
+          <p className="text-white/20 text-4xl">🎪</p>
+          <p className="text-white/35 text-sm font-medium">
+            {searchText.trim() !== ""
+              ? `No events found for "${searchText}"`
+              : selectedCategory !== "all"
+              ? `No ${selectedCategory} events right now`
+              : "No events yet — check back soon"}
+          </p>
         </div>
       )}
     </div>

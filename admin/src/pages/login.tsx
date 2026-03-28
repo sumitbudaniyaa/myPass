@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { Mail, ArrowRight } from "lucide-react";
 
 const Login = () => {
   const [isGetOTP, setisGetOTP] = useState<boolean>(false);
@@ -18,9 +15,7 @@ const Login = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/dashboard/events");
-    }
+    if (token) navigate("/dashboard/events");
   });
 
   const handleGetOtp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,9 +24,7 @@ const Login = () => {
       setsendingOTP(true);
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/adminAuth/OTP`,
-        {
-          email,
-        }
+        { email }
       );
       toast.success(res.data.message);
       setisGetOTP(true);
@@ -48,10 +41,7 @@ const Login = () => {
       setloading(true);
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/adminAuth/login`,
-        {
-          email,
-          otp,
-        }
+        { email, otp }
       );
       toast.success(res.data.message);
       localStorage.setItem("token", res.data.token);
@@ -67,52 +57,46 @@ const Login = () => {
 
   return (
     <div
-      style={{
-        background:
-          "linear-gradient(rgba(22, 31, 243, 0.2) 0%, rgba(18, 139, 251, 0.1) 25%, rgba(0, 140, 115, 0) 50%)",
-      }}
+      style={{ background: "linear-gradient(rgba(22, 31, 243, 0.15) 0%, rgba(18, 139, 251, 0.07) 25%, rgba(0, 140, 115, 0) 50%)" }}
       className="w-screen h-screen flex flex-col items-center justify-center relative"
     >
       <Toaster position="top-center" />
 
-      <div className="w-[100%] items-center flex absolute top-3 pl-3 gap-2">
-        <div className="shape bg-[rgba(255,255,255,0.5)] w-10"></div>
-        <p className="text-[rgba(255,255,255,0.5)] text-lg font-medium">
-          myPass
-        </p>
+      <div className="flex items-center gap-1.5 absolute top-4 left-4">
+        <img src="/mypasslogo.png" className="w-7 h-7 object-contain" alt="myPass" />
+        <p className="text-white/70 font-semibold">myPass</p>
       </div>
 
       <form
         onSubmit={FormSubmit}
-        className="w-[90%] sm:w-[60%] md:w-[40%] lg:w-[30%] shadow-sm bg-[rgba(255,255,255,0.1)] h-auto rounded-md p-[1rem] flex flex-col gap-3"
+        className="w-[90%] sm:w-[60%] md:w-[42%] lg:w-[32%] bg-white/[0.06] border border-white/10 rounded-2xl p-6 flex flex-col gap-4 shadow-2xl"
       >
-        <p className="text-[rgba(255,255,255,0.8)] text-lg font-medium non-italic">
-          Login to your account
-        </p>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setemail(e.target.value);
-          }}
-          className="w-full border-1 border-[rgba(255,255,255,0.3)] rounded-md h-9 text-[rgba(255,255,255,0.8)] outline-none pt-2 pb-2 pl-2"
-          required
-        />
-        {isGetOTP ? (
-          <div className="flex flex-col gap-1 items-center">
-            <p className="text-[rgba(255,255,255,0.8)] text-lg font-light non-italic self-start flex gap-2 items-center">
-              Enter OTP{" "}
-              <span className="text-[rgba(255,255,255,0.5)] text-sm font-light italic">
-                Sent to your Email Id
-              </span>
-            </p>
-            <InputOTP
-              value={otp}
-              onChange={(val) => setotp(val)}
-              maxLength={4}
+        <div>
+          <p className="text-white/85 text-lg font-semibold">
+            {isGetOTP ? "Enter your OTP" : "Log in to myPass"}
+          </p>
+          <p className="text-white/35 text-sm mt-0.5">
+            {isGetOTP ? `Code sent to ${email}` : "Manage your events and bookings"}
+          </p>
+        </div>
+
+        {!isGetOTP && (
+          <div className="relative flex items-center">
+            <Mail size="0.85rem" className="absolute left-3 text-white/30 pointer-events-none" />
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setemail(e.target.value)}
+              className="w-full pl-8 pr-3 py-2.5 bg-white/[0.06] border border-white/10 rounded-xl text-white/80 text-sm outline-none placeholder:text-white/25 focus:border-white/20 transition-colors"
               required
-            >
+            />
+          </div>
+        )}
+
+        {isGetOTP && (
+          <div className="flex flex-col items-center gap-3">
+            <InputOTP value={otp} onChange={(val) => setotp(val)} maxLength={4} required>
               <InputOTPGroup>
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />
@@ -120,79 +104,36 @@ const Login = () => {
                 <InputOTPSlot index={3} />
               </InputOTPGroup>
             </InputOTP>
+            <p
+              className="text-white/30 text-xs cursor-pointer hover:text-white/50 transition-colors"
+              onClick={() => setisGetOTP(false)}
+            >
+              ← Change email
+            </p>
           </div>
-        ) : (
-          ""
         )}
+
+        <button
+          type="submit"
+          disabled={sendingOTP || loading}
+          className="w-full flex items-center justify-center gap-2 py-2.5 bg-white/10 hover:bg-white/15 border border-white/10 text-white/80 text-sm font-medium rounded-xl cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {(sendingOTP || loading) ? (
+            <div className="w-4 h-4 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
+          ) : (
+            <>
+              {isGetOTP ? "Log In" : "Get OTP"}
+              <ArrowRight size="0.85rem" />
+            </>
+          )}
+        </button>
 
         <p
-          className="text-[rgba(255,255,255,0.5)] ml-auto text-sm font-light cursor-pointer"
+          className="text-white/30 text-xs text-center cursor-pointer hover:text-white/50 transition-colors"
           onClick={() => navigate("/register")}
         >
-          Register account
+          Don't have an account? <span className="underline">Register</span>
         </p>
-
-        {isGetOTP ? (
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-[rgba(255,255,255,0.2)] flex items-center justify-center text-[rgba(255,255,255,0.8)] p-1 rounded-md font-medium outline-none cursor-pointer mt-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none"
-          >
-            {loading ? (
-              <div role="status">
-                <svg
-                  aria-hidden="true"
-                  className="w-5 h-5 text-gray-200 animate-spin fill-black"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="white"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentFill"
-                  />
-                </svg>
-                <span className="sr-only">Loading...</span>
-              </div>
-            ) : (
-              "Log In"
-            )}
-          </button>
-        ) : (
-          <button
-            type="submit"
-            disabled={sendingOTP}
-            className="bg-[rgba(255,255,255,0.2)] flex items-center justify-center text-[rgba(255,255,255,0.8)] p-1 rounded-md font-medium outline-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none"
-          >
-            {sendingOTP ? (
-              <div role="status">
-                <svg
-                  aria-hidden="true"
-                  className="w-5 h-5 text-white animate-spin fill-black"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="white"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentFill"
-                  />
-                </svg>
-                <span className="sr-only">Loading...</span>
-              </div>
-            ) : (
-              "Get OTP"
-            )}
-          </button>
-        )}
       </form>
     </div>
   );

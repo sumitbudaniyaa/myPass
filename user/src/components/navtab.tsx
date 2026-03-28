@@ -1,5 +1,4 @@
-import { Tickets } from "lucide-react";
-import { Settings2 } from "lucide-react";
+import { Tickets, Settings2, LogOut } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -12,37 +11,39 @@ const NavTab = ({ setisLoggedIn, setnavtab }: NavTabProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className="p-3 w-50 flex flex-col items-center shadow-sm border-1 border-[rgba(255,255,255,0.2)] lg:w-70 sm:w-60 md:w-65 fixed right-1 bg-[rgba(21,21,21)] top-15 z-70 rounded-lg gap-2">
-      <ul className="list-none w-[100%] flex flex-col gap-2 text-[rgba(255,255,255,0.5)]">
+    <div className="fixed right-3 top-[7vh] mt-1 w-48 bg-[rgba(18,18,18,0.97)] border border-white/10 rounded-xl shadow-2xl z-[70] overflow-hidden backdrop-blur-xl">
+      <ul className="list-none flex flex-col p-1.5 gap-0.5 text-white/60">
         <li
-          onClick={() => navigate("/my-bookings")}
-          className="bg-neutral-900 p-2 rounded-sm flex items-center gap-2 cursor-pointer"
+          onClick={() => { navigate("/my-bookings"); setnavtab(false); }}
+          className="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-white/[0.07] hover:text-white/90 transition-all duration-150 text-sm"
         >
-          {" "}
-          <Tickets size={"1.2rem"} /> My Bookings
+          <Tickets size={"1rem"} />
+          My Bookings
         </li>
         <li
-          onClick={() => navigate("/account")}
-          className="bg-neutral-900 p-2 rounded-sm flex items-center gap-2 cursor-pointer"
+          onClick={() => { navigate("/account"); setnavtab(false); }}
+          className="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-white/[0.07] hover:text-white/90 transition-all duration-150 text-sm"
         >
-          {" "}
-          <Settings2 size={"1.2rem"} />
+          <Settings2 size={"1rem"} />
           Account
         </li>
       </ul>
 
-      <button
-        onClick={() => {
-          localStorage.removeItem("token");
-          setisLoggedIn(false);
-          navigate("/");
-          toast.success("Logged Out successfully");
-          setnavtab(false);
-        }}
-        className="bg-red-500 cursor-pointer w-[100%] p-1 text-sm rounded-md text-red-100"
-      >
-        Log out
-      </button>
+      <div className="border-t border-white/[0.06] p-1.5">
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            setisLoggedIn(false);
+            navigate("/");
+            toast.success("Logged out successfully");
+            setnavtab(false);
+          }}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer text-red-400 hover:bg-red-500/10 transition-all duration-150 text-sm"
+        >
+          <LogOut size={"1rem"} />
+          Log out
+        </button>
+      </div>
     </div>
   );
 };

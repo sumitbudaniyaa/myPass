@@ -15,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<LoggingIn />} />
+        <Route path="/auth/" element={<LoggingIn />} />
         <Route path="/:eventId" element={<EventPage />} />
         <Route
           path="/checkout"

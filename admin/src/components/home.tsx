@@ -2,17 +2,14 @@ import api from "@/utils/api";
 import { useOutletContext } from "react-router-dom";
 import EventCard from "./eventCard";
 import { useState } from "react";
-import { RefreshCcw } from "lucide-react";
+import { RefreshCcw, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import EventPage from "./eventpage";
-import { useQuery } from "@tanstack/react-query";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 type OutletContextType = {
   setpostevent: (value: boolean) => void;
-  admin: {
-    _id: string;
-  };
+  admin: { _id: string };
 };
 
 const Home = () => {
@@ -30,9 +27,7 @@ const Home = () => {
     try {
       const res = await api.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/eventRoute/fetchEvent`,
-        {
-          adminId: adminId,
-        }
+        { adminId }
       );
       return res?.data;
     } catch (err: any) {
@@ -49,7 +44,7 @@ const Home = () => {
   });
 
   return (
-    <div className="w-[100%] min-h-screen p-1 lg:p-3 lg:relative">
+    <div className="w-full min-h-screen p-4 lg:p-5">
       {eventPage ? (
         <EventPage
           selectedevent={selectedevent}
@@ -58,53 +53,58 @@ const Home = () => {
         />
       ) : (
         <>
-          {" "}
-          <div className="w-[100%] flex justify-between">
-            <h1 className="text-[rgba(255,255,255,0.8)] flex gap-3 font-semibold text-xl lg:text-2xl">
-              Events{" "}
-              <span
+          <div className="flex justify-between items-center mb-5">
+            <div className="flex items-center gap-3">
+              <h1 className="text-white/85 font-semibold text-xl">Events</h1>
+              <button
                 onClick={refreshFetch}
-                className="bg-[rgba(255,255,255,0.2)] p-1.5 rounded-md cursor-pointer flex h-[100%] gap-1 font-light text-sm items-center text-[rgba(255,255,255,0.8)] "
+                className="flex items-center gap-1.5 bg-white/[0.06] hover:bg-white/10 border border-white/10 px-2.5 py-1.5 rounded-full text-white/40 hover:text-white/70 text-xs transition-all cursor-pointer"
               >
-                <RefreshCcw size={"1rem"} />
-                refresh
-              </span>
-            </h1>{" "}
+                <RefreshCcw size="0.75rem" />
+                Refresh
+              </button>
+            </div>
             <button
               onClick={() => setpostevent(true)}
-              className="p-.5 pl-2.5 pr-2.5 text-sm font-medium text-[rgba(255,255,255,0.8)]  bg-[rgba(255,255,255,0.2)] rounded-sm flex gap-1 items-center lg:text-md cursor-pointer"
+              className="flex items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-1.5 rounded-full text-white/80 text-sm font-medium transition-all cursor-pointer"
             >
+              <Plus size="0.9rem" />
               Post event
             </button>
           </div>
-          <div className="w-[100%] p-3 flex flex-col items-center mt-4 sm:flex-row lg:flex-row flex-wrap lg:gap-5 rounded-md gap-3 shrink-0">
-            {events && events.length > 0 ? (
-              events.map((event: any, index: number) => (
+
+          {isLoading ? (
+            <div className="flex justify-center mt-20">
+              <div className="flex gap-2">
+                <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce"></div>
+                <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce [animation-delay:-.3s]"></div>
+                <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce [animation-delay:-.5s]"></div>
+              </div>
+            </div>
+          ) : events && events.length > 0 ? (
+            <div className="flex flex-wrap gap-4">
+              {events.map((event: any, index: number) => (
                 <EventCard
                   key={index}
                   event={event}
                   seteventPage={seteventPage}
                   setselectedevent={setselectedevent}
                 />
-              ))
-            ) : isLoading ? (
-              ""
-            ) : (
-              <div className="w-[100%] min-h-screen flex justify-center mt-50">
-                <p className="text-3xl font-semibold text-[rgba(255,255,255,0.5)]">
-                  No events posted
-                </p>
-              </div>
-            )}
-
-            {isLoading && (
-              <div className="flex flex-row gap-2">
-                <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce"></div>
-                <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce [animation-delay:-.3s]"></div>
-                <div className="w-2 h-2 rounded-full bg-neutral-500 animate-bounce [animation-delay:-.5s]"></div>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center mt-32 gap-3">
+              <p className="text-white/20 text-4xl">🎪</p>
+              <p className="text-white/35 font-medium">No events posted yet</p>
+              <button
+                onClick={() => setpostevent(true)}
+                className="flex items-center gap-1.5 bg-white/[0.07] hover:bg-white/10 border border-white/10 px-4 py-2 rounded-full text-white/50 text-sm transition-all cursor-pointer mt-1"
+              >
+                <Plus size="0.85rem" />
+                Create your first event
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

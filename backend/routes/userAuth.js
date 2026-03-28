@@ -17,7 +17,7 @@ router.get(
     const user = req.user;
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-    res.redirect(`${process.env.FRONTEND_URL}/auth/?token=${token}`);
+    res.redirect(`${process.env.FRONTEND_URL}/auth?token=${token}`);
   }
 );
 

@@ -22,28 +22,33 @@ const Confirmation = () => {
     <>
       <Confetti ref={confettiRef} className="absolute size-full bottom-0 z-0" />
 
-      <div className="w-screen min-h-screen relative flex flex-col justify-center p-2 z-10">
-        <TicketCheck
-          strokeWidth={"1px"}
-          size={"5rem"}
-          className="mt-10 self-center text-green-950 p-4 bg-green-400 rounded-4xl"
-        />
+      <div className="w-screen min-h-screen relative flex flex-col justify-center items-center p-6 z-10 gap-4">
+        <div className="bg-green-400/10 border border-green-500/20 rounded-full p-5">
+          <TicketCheck
+            strokeWidth={"1.5px"}
+            size={"3rem"}
+            className="text-green-400"
+          />
+        </div>
 
-        <p className="mt-3 text-[rgba(255,255,255,0.8)] text-2xl self-center gap-1">
-          {booking?.message}
-        </p>
-        <p className="mt-1 self-center text-xs text-[rgba(255,255,255,0.4)]">
-          #{booking?.booking?._id}
-        </p>
+        <div className="flex flex-col items-center gap-1 text-center">
+          <p className="text-white/90 text-2xl font-semibold">
+            {booking?.message}
+          </p>
+          <p className="text-white/30 text-xs font-mono">
+            #{booking?.booking?._id}
+          </p>
+        </div>
+
         <button
           onClick={() =>
             navigate(`/my-bookings/${booking?.booking?._id}`, {
               state: booking?.booking,
             })
           }
-          className="text-sm cursor-pointer p-1 pr-2 pl-2 bg-[rgba(255,255,255,0.1)] rounded-md mt-2 text-[rgba(255,255,255,0.5)] self-center"
+          className="px-5 py-2 bg-white/10 hover:bg-white/15 border border-white/10 rounded-full text-white/60 hover:text-white/80 text-sm transition-all cursor-pointer"
         >
-          Click here to view tickets
+          View my tickets →
         </button>
       </div>
     </>

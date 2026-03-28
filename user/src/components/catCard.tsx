@@ -9,18 +9,21 @@ const CatCard = ({
   selectedCategory,
   setselectedCategory,
 }: CatCardProp) => {
+  const isActive = selectedCategory === category.name;
+
   return (
     <div
       onClick={() => setselectedCategory(category.name)}
-      className={`bg-[rgba(255,255,255,0.1)] rounded-sm cursor-pointer flex items-center gap-1.5 justify-center p-2 text-[rgba(255,255,255,0.8)] ${
-        selectedCategory === category.name
-          ? "bg-[rgba(255,255,255,0.8)] text-black"
-          : ""
+      className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer text-sm transition-all duration-200 ${
+        isActive
+          ? "bg-white text-black font-medium shadow-md"
+          : "bg-white/[0.08] text-white/60 hover:bg-white/[0.12] hover:text-white/80 border border-white/10"
       }`}
     >
       {category.icon}
-      <p className="text-sm">{category.label}</p>
+      <p>{category.label}</p>
     </div>
   );
 };
+
 export default CatCard;

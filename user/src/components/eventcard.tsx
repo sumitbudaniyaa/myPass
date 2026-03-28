@@ -19,24 +19,39 @@ const EventCard = ({ event }: EventCard) => {
 
   const isSoldOut = totaltickets === bookedtickets;
 
+  const minPrice = Math.min(...event.tickets.map((t: any) => t.price));
+
   return (
     <div
       onClick={() => navigate(`/${event._id}`)}
-      className={` ${
-        isSoldOut ? "pointer-events-none opacity-50" : ""
-      } relative w-40 h-67 lg:w-50 lg:h-70 border-1 border-[rgba(255,255,255,0.2)] rounded-md justify-between flex flex-col p-1.5 hover:scale-103 duration-200 cursor-pointer`}
+      className={`relative w-44 h-72 lg:w-52 lg:h-80 rounded-xl overflow-hidden border border-white/10 cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-black/60 hover:border-white/20 ${
+        isSoldOut ? "pointer-events-none opacity-40" : ""
+      }`}
     >
-      {isSoldOut ? (
-        <div className="w-[100%] h-10 bg-red-900/80 absolute top-0 left-0 flex items-center rounded-md justify-center text-[rgba(255,255,255,0.8)] font-semibold">
-          Sold Out
+      <img
+        src={event.poster}
+        className="w-full h-full object-cover"
+        alt={event.name}
+      />
+
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
+
+      {isSoldOut && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="bg-red-900/90 text-red-200 text-xs font-semibold px-3 py-1 rounded-full border border-red-700/50">
+            Sold Out
+          </span>
         </div>
-      ) : (
-        ""
       )}
-      <img src={event.poster} className="h-[90%] rounded-sm" alt="" />
-      <p className="text-sm font-md text-[rgba(255,255,255,0.8)] mt-1 pl-1">
-        {event.name}
-      </p>
+
+      <div className="absolute bottom-0 left-0 right-0 p-2.5">
+        <p className="text-white/95 text-sm font-medium leading-tight truncate">
+          {event.name}
+        </p>
+        {!isSoldOut && (
+          <p className="text-white/50 text-xs mt-0.5">from ₹{minPrice}</p>
+        )}
+      </div>
     </div>
   );
 };

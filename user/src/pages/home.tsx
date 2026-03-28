@@ -17,16 +17,13 @@ const Home = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (token) {
-      setisLoggedIn(true);
-    } else {
-      setisLoggedIn(false);
-    }
+    setisLoggedIn(!!token);
   }, [token]);
 
   return (
     <div className="w-screen min-h-screen flex flex-col">
       <Toaster position="top-center" />
+
       <Nav
         setisLogInOpen={setisLogInOpen}
         isLoggedIn={isLoggedIn}
@@ -34,12 +31,14 @@ const Home = () => {
         setnavtab={setnavtab}
         navtab={navtab}
       />
-      <div className="pl-2 pr-2 mt-5 lg:w-[70%] lg:self-center">
-        <h3 className="text-2xl font-semibold text-[rgba(255,255,255,0.8)]">
-          Events Start Here!
-        </h3>
-        <p className="text-[rgba(255,255,255,0.5)]">
-          All your events live, local, and online.
+
+      {/* Hero */}
+      <div className="px-3 mt-7 lg:w-[70%] lg:self-center">
+        <h1 className="text-3xl font-bold text-white/90 leading-tight">
+          Find your next <span className="text-white/50">experience</span>
+        </h1>
+        <p className="text-white/35 text-sm mt-1.5">
+          Concerts, college fests, meetups — discover events near you.
         </p>
       </div>
 
@@ -52,22 +51,17 @@ const Home = () => {
         <>
           <div
             onClick={() => setisLogInOpen(false)}
-            className="inset-0 z-80 flex justify-center items-center backdrop-blur-sm bg-black/40 fixed"
+            className="inset-0 z-[80] flex justify-center items-center backdrop-blur-sm bg-black/50 fixed"
           />
           <Login />
         </>
       )}
 
-      {navtab ? (
+      {navtab && (
         <NavTab setisLoggedIn={setisLoggedIn} setnavtab={setnavtab} />
-      ) : (
-        ""
       )}
 
-      <EventSection
-        selectedCategory={selectedCategory}
-        searchText={searchText}
-      />
+      <EventSection selectedCategory={selectedCategory} searchText={searchText} />
 
       <Footer />
     </div>
