@@ -1,34 +1,21 @@
-const nodemailer = require("nodemailer");
+const Brevo = require("@getbrevo/brevo");
 require("dotenv").config();
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const client = Brevo.ApiClient.instance;
+client.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
 
-transporter.verify((err) => {
-  if (err) {
-    console.error("SMTP connection failed:", err.message);
-  } else {
-    console.log("SMTP mailer ready");
-  }
-});
+const transactionalApi = new Brevo.TransactionalEmailsApi();
 
 const sendMail = async ({ to, subject, html, text }) => {
-  const mailOptions = {
-    from: `myPass <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    ...(html && { html }),
-    ...(text && { text }),
-  };
+  const email = new Brevo.SendSmtpEmail();
 
-  return transporter.sendMail(mailOptions);
+  email.sender = { name: "myPass", email: process.env.EMAIL_USER };
+  email.to = [{ email: to }];
+  email.subject = subject;
+  if (html) email.htmlContent = html;
+  if (text) email.textContent = text;
+
+  return transactionalApi.sendTransacEmail(email);
 };
 
 module.exports = { sendMail };
