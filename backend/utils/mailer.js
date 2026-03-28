@@ -2,12 +2,12 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.SMTP_PORT) || 587,
-  secure: false,
+  host: "smtp.resend.com",
+  port: 465,
+  secure: true,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: "resend",
+    pass: process.env.RESEND_API_KEY,
   },
 });
 
