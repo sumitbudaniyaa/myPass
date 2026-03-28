@@ -3,7 +3,7 @@ import api from "@/utils/api";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { formatTo12Hour } from "@/utils/formattime";
-import { Calendar, Clock, MapPinned, ChevronLeft, Download } from "lucide-react";
+import { Calendar, Clock, MapPinned, ChevronLeft } from "lucide-react";
 
 const BookedTicket = () => {
   const navigate = useNavigate();
