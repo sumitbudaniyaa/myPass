@@ -24,7 +24,7 @@ const EventCard = ({ event }: EventCard) => {
   return (
     <div
       onClick={() => navigate(`/${event._id}`)}
-      className={`relative w-44 h-72 lg:w-52 lg:h-80 rounded-xl overflow-hidden border border-white/10 cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-black/60 hover:border-white/20 ${
+      className={`relative w-full h-64 sm:h-72 lg:h-80 rounded-xl overflow-hidden border border-white/10 cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-black/60 hover:border-white/20 ${
         isSoldOut ? "pointer-events-none opacity-40" : ""
       }`}
     >

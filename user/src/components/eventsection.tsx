@@ -54,7 +54,7 @@ const EventSection = ({ selectedCategory, searchText }: EventSectionProp) => {
           </div>
         </div>
       ) : filteredEvents.length !== 0 ? (
-        <div className="flex flex-wrap gap-3 justify-start">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {filteredEvents.map((event: any, index: number) => (
             <EventCard key={index} event={event} />
           ))}
